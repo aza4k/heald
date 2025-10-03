@@ -1,0 +1,38 @@
+# Byte-code files
+*.pyc
+__pycache__/
+*.egg-info/
+.pytest_cache/
+
+# Virtual environment
+venv/
+env/
+
+# Editor/IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Database files
+*.sqlite3
+db.sqlite3
+
+# Media and static files (if not managed by a CDN or separate storage)
+media/
+static_collected/
+
+# Log files
+*.log
+logs/
+
+# Django-specific files
+# Exclude Django migrations initially, but consider including them once stable.
+# migrations/ # Uncomment if you want to exclude all migration files
+# app_name/migrations/000*_initial.py # Specific migration files can be excluded if needed
+# local_settings.py (or any file containing sensitive local configurations)
+local_settings.py
+
+# OS-specific files
+.DS_Store
+Thumbs.db

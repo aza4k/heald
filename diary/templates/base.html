@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Healdi</title>
+</head>
+<body>
+<nav>
+    {% if user.is_authenticated %}
+        Salom, {{ user.username }} |
+        <a href="{% url 'dashboard' %}">Bosh sahifa</a> |
+        <a href="{% url 'add_entry' %}">+ Qo‘shish</a> |
+
+        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Chiqish</button>
+        </form>
+    {% else %}
+        <a href="{% url 'login' %}">Kirish</a> |
+        <a href="{% url 'register' %}">Ro‘yxatdan o‘tish</a>
+    {% endif %}
+</nav>
+<hr>
+
+<hr>
+
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>

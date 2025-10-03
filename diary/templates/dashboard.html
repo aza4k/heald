@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Oxirgi natijalar</h2>
+{% if chart %}
+    <img src="data:image/png;base64,{{ chart }}" alt="Chart">
+{% else %}
+    <p>Hali ma'lumot kiritilmagan.</p>
+{% endif %}
+<ul>
+  {% for e in entries %}
+    <li>{{ e.created_at }} → <b>{{ e.value }}</b> mmol/L ({{ e.note }})</li>
+  {% endfor %}
+</ul>
+{% endblock %}
