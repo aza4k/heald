@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>HealD | Данные</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #f8fafc;
+      color: #1b4332;
+      font-family: "Segoe UI", sans-serif;
+    }
+    .navbar {
+      background-color: #95d5b2 !important;
+    }
+    .btn-outline-light {
+      border-color: #1b4332;
+      color: #1b4332;
+    }
+    .btn-outline-light:hover {
+      background-color: #ffffff;
+      color: #1b4332;
+    }
+    .form-card {
+      background-color: #d8f3dc;
+      border: none;
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .form-label {
+      font-weight: 500;
+      color: #1b4332;
+    }
+    .form-control {
+      border-radius: 10px;
+      border: 1px solid #b7e4c7;
+    }
+    .form-control:focus {
+      border-color: #40916c;
+      box-shadow: 0 0 6px rgba(64,145,108,0.4);
+    }
+    .btn-save {
+      background-color: #52b788;
+      color: white;
+      font-weight: 500;
+      border-radius: 12px;
+    }
+    .btn-save:hover {
+      background-color: #40916c;
+      color: white;
+    }
+    .chart-container {
+      margin-top: 50px;
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Шапка -->
+  <nav class="navbar navbar-expand-lg shadow">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="index.html">
+        <img src="logo_l.png" alt="HealD Logo" height="55" class="me-2">
+      </a>
+      <div>
+        <a href="profile.html" class="btn btn-outline-light fw-bold">Профиль</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Форма -->
+  <main class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <div class="form-card">
+          <h4 class="mb-4 text-center">Ваши данные</h4>
+          <form id="dataForm">
+            <div class="mb-3">
+              <label for="fio" class="form-label">ФИО</label>
+              <input type="text" class="form-control" id="fio" placeholder="Введите полное имя">
+            </div>
+            <div class="mb-3">
+              <label for="dob" class="form-label">Дата рождения</label>
+              <input type="date" class="form-control" id="dob">
+            </div>
+            <div class="mb-3">
+              <label for="phone" class="form-label">Телефон</label>
+              <input type="tel" class="form-control" id="phone" placeholder="+998 90 123 45 67">
+            </div>
+            <div class="mb-3">
+              <label for="address" class="form-label">Адрес</label>
+              <input type="text" class="form-control" id="address" placeholder="Введите адрес">
+            </div>
+            <div class="mb-3">
+              <label for="height" class="form-label">Рост (см)</label>
+              <input type="number" class="form-control" id="height" placeholder="Введите рост">
+            </div>
+            <div class="mb-3">
+              <label for="weight" class="form-label">Вес (кг)</label>
+              <input type="number" class="form-control" id="weight" placeholder="Введите вес">
+            </div>
+            <div class="mb-3">
+              <label for="glucose" class="form-label">Глюкоза (ммоль/л)</label>
+              <input type="number" step="0.1" class="form-control" id="glucose" placeholder="Введите уровень глюкозы">
+            </div>
+            <div class="mb-4">
+              <label for="hba1c" class="form-label">Гликированный гемоглобин (%)</label>
+              <input type="number" step="0.1" class="form-control" id="hba1c" placeholder="Введите показатель HbA1c">
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-save px-4">Сохранить</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Графики -->
+    <div class="row justify-content-center chart-container">
+      <h4 class="text-center mb-4">Изменение показателей</h4>
+      <div class="col-md-10">
+        <canvas id="weightChart" height="100"></canvas>
+        <canvas id="glucoseChart" height="100" class="mt-4"></canvas>
+        <canvas id="hba1cChart" height="100" class="mt-4"></canvas>
+      </div>
+    </div>
+  </main>
+
+  <!-- JS -->
+  <script>
+    const form = document.getElementById("dataForm");
+
+    // Загружаем данные
+    let savedData = JSON.parse(localStorage.getItem("userData")) || { 
+      profile: {}, 
+      weight: [], 
+      glucose: [], 
+      hba1c: [], 
+      dates: [] 
+    };
+
+    // Заполняем форму при загрузке
+    window.onload = () => {
+      if (savedData.profile) {
+        document.getElementById("fio").value = savedData.profile.fio || "";
+        document.getElementById("dob").value = savedData.profile.dob || "";
+        document.getElementById("phone").value = savedData.profile.phone || "";
+        document.getElementById("address").value = savedData.profile.address || "";
+        document.getElementById("height").value = savedData.profile.height || "";
+        document.getElementById("weight").value = savedData.profile.weight || "";
+        document.getElementById("glucose").value = savedData.profile.glucose || "";
+        document.getElementById("hba1c").value = savedData.profile.hba1c || "";
+      }
+      renderCharts();
+    };
+
+    // Сохраняем данные
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const fio = document.getElementById("fio").value;
+      const dob = document.getElementById("dob").value;
+      const phone = document.getElementById("phone").value;
+      const address = document.getElementById("address").value;
+      const height = document.getElementById("height").value;
+      const weight = document.getElementById("weight").value;
+      const glucose = document.getElementById("glucose").value;
+      const hba1c = document.getElementById("hba1c").value;
+
+      // Сохраняем профиль
+      savedData.profile = { fio, dob, phone, address, height };
+
+      // Добавляем показатели
+      const today = new Date().toLocaleDateString();
+      savedData.dates.push(today);
+      savedData.weight.push(Number(weight));
+      savedData.glucose.push(Number(glucose));
+      savedData.hba1c.push(Number(hba1c));
+
+      // Сохраняем в localStorage
+      localStorage.setItem("userData", JSON.stringify(savedData));
+
+      alert("Данные сохранены. Для применения измененеий обновите страницу.");
+      renderCharts();
+    });
+
+    // Функция отрисовки графиков
+    function renderCharts() {
+      const ctxWeight = document.getElementById("weightChart");
+      const ctxGlucose = document.getElementById("glucoseChart");
+      const ctxHba1c = document.getElementById("hba1cChart");
+
+      new Chart(ctxWeight, {
+        type: 'line',
+        data: {
+          labels: savedData.dates,
+          datasets: [{
+            label: 'Вес (кг)',
+            data: savedData.weight,
+            borderColor: '#2d6a4f',
+            backgroundColor: 'rgba(45, 106, 79, 0.2)',
+            tension: 0.3,
+            fill: true
+          }]
+        }
+      });
+
+      new Chart(ctxGlucose, {
+        type: 'line',
+        data: {
+          labels: savedData.dates,
+          datasets: [{
+            label: 'Глюкоза (ммоль/л)',
+            data: savedData.glucose,
+            borderColor: '#40916c',
+            backgroundColor: 'rgba(64, 145, 108, 0.2)',
+            tension: 0.3,
+            fill: true
+          }]
+        }
+      });
+
+      new Chart(ctxHba1c, {
+        type: 'line',
+        data: {
+          labels: savedData.dates,
+          datasets: [{
+            label: 'HbA1c (%)',
+            data: savedData.hba1c,
+            borderColor: '#74c69d',
+            backgroundColor: 'rgba(116, 198, 157, 0.2)',
+            tension: 0.3,
+            fill: true
+          }]
+        }
+      });
+    }
+  </script>
+</body>
+</html>

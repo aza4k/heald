@@ -1,9 +1,17 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}Новая запись{% endblock %}
+
 {% block content %}
-<h2>Yangi natija qo‘shish</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Saqlash</button>
-</form>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow p-4">
+        <h3 class="text-center mb-4">Добавить новую запись</h3>
+        <form method="post">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button type="submit" class="btn btn-success w-100">Сохранить</button>
+        </form>
+      </div>
+    </div>
+  </div>
 {% endblock %}

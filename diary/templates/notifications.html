@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Уведомления{% endblock %}
+
+{% block content %}
+  <div class="bg-white p-4 p-md-5 rounded shadow-sm">
+    <h1 class="text-success mb-4">Уведомления</h1>
+
+    {% if logs %}
+      <ul class="list-group">
+        {% for log in logs %}
+          <li class="list-group-item mb-2 border rounded bg-light">
+            <p class="mb-1">
+              <strong>{{ log.date }} {{ log.time|time:"H:i" }}</strong>
+            </p>
+            <p class="mb-1">
+              <strong>Препарат:</strong> {{ log.medicine.name }}
+            </p>
+            <p class="mb-1">
+              <strong>Дозировка:</strong> {{ log.medicine.dose }}
+            </p>
+            <p class="mb-0 text-muted">
+              <strong>Напоминание:</strong> Примите {{ log.medicine.dose }} препарата {{ log.medicine.name }}
+            </p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-muted">Пока уведомлений нет</p>
+    {% endif %}
+  </div>
+{% endblock %}

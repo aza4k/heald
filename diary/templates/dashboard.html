@@ -1,14 +1,121 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% block title %}Ваши данные{% endblock %}
+
 {% block content %}
-<h2>Oxirgi natijalar</h2>
-{% if chart %}
-    <img src="data:image/png;base64,{{ chart }}" alt="Chart">
-{% else %}
-    <p>Hali ma'lumot kiritilmagan.</p>
-{% endif %}
-<ul>
-  {% for e in entries %}
-    <li>{{ e.created_at }} → <b>{{ e.value }}</b> mmol/L ({{ e.note }})</li>
-  {% endfor %}
-</ul>
+<div class="row">
+  <!-- Forma chap tarafda -->
+  <div class="col-md-4">
+    <h3 class="mb-4">Добро пожаловать!</h3>     
+    <div class="card shadow p-4 mb-4">
+      <h4 class="mb-3">Введите данные</h4>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">Рост (см)</label>
+          <input type="number" name="height" value="{{ userhealth.height|default:'' }}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Вес (кг)</label>
+          <input type="number" name="weight" value="{{ userhealth.weight|default:'' }}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Дата и время</label>
+          <div class="input-group">
+            <input type="datetime-local" name="datetime" class="form-control">
+            <button type="button" class="btn btn-outline-secondary" onclick="setNow()">⏰ Сейчас</button>
+          </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Глюкоза (ммоль/л)</label>
+          <input type="number" step="0.1" name="glucose" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Сохранить</button>
+      </form>
+    </div>
+    <a href="{% url 'export_pdf' %}" class="btn btn-outline-success w-100">📄 Скачать PDF (28 дней)</a>
+  </div>
+
+  <!-- Grafiklar o‘ng tarafda -->
+  <div class="col-md-8">
+    <div class="card shadow p-4 mb-4">
+      <h4 class="mb-3">Глюкоза за последние дни</h4>
+      <canvas id="glucoseChart" height="100"></canvas>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card shadow p-3">
+          <h5 class="text-center">Рост</h5>
+          <canvas id="heightChart" height="150"></canvas>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card shadow p-3">
+          <h5 class="text-center">Вес</h5>
+          <canvas id="weightChart" height="150"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Grafik scriptlari -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  // "Сейчас" tugmasi
+  function setNow() {
+    let now = new Date();
+    let formatted = now.toISOString().slice(0,16); // YYYY-MM-DDTHH:mm
+    document.querySelector('input[name="datetime"]').value = formatted;
+  }
+
+  const dates = {{ dates|safe }};
+  const glucose = {{ glucose_values|safe }};
+  const height = {{ height_values|safe }};
+  const weight = {{ weight_values|safe }};
+
+  new Chart(document.getElementById('glucoseChart'), {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        label: 'Глюкоза',
+        data: glucose,
+        borderColor: '#2e7d32',
+        backgroundColor: '#b2efb7',
+        fill: true,
+        tension: 0.3
+      }]
+    }
+  });
+
+  new Chart(document.getElementById('heightChart'), {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        label: 'Рост',
+        data: height,
+        borderColor: '#0288d1',
+        backgroundColor: '#b3e5fc',
+        fill: true
+      }]
+    }
+  });
+
+  new Chart(document.getElementById('weightChart'), {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [{
+        label: 'Вес',
+        data: weight,
+        borderColor: '#c62828',
+        backgroundColor: '#ef9a9a',
+        fill: true
+      }]
+    }
+  });
+</script>
 {% endblock %}

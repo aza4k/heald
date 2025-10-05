@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Диета{% endblock %}
+{% block content %}
+<main class="container py-5">
+
+  <!-- Sarlavha va kalendar -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-success">Диета на неделю для диабетиков</h2>
+    <div class="calendar px-3 py-2 rounded shadow-sm bg-light border text-center">
+      <small class="text-muted">Неделя</small><br>
+      <span class="fw-semibold">29.09 – 05.10</span>
+    </div>
+  </div>
+
+  <!-- Haftalik kunlar grid shaklida -->
+  <div class="row g-4">
+    <!-- Пн -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 day-card shadow border-0 rounded-4 hover-card">
+        <div class="card-body">
+          <h5 class="card-title text-center text-success fw-bold">Пн</h5>
+          <ul class="list-unstyled">
+            <li><b>Завтрак:</b> овсянка, яйцо</li>
+            <li><b>Обед:</b> овощной суп, курица</li>
+            <li><b>Ужин:</b> рыба, кабачки</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вт -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 day-card shadow border-0 rounded-4 hover-card">
+        <div class="card-body">
+          <h5 class="card-title text-center text-success fw-bold">Вт</h5>
+          <ul class="list-unstyled">
+            <li><b>Завтрак:</b> гречка, творог</li>
+            <li><b>Обед:</b> борщ, индейка</li>
+            <li><b>Ужин:</b> овощное рагу</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ср -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 day-card shadow border-0 rounded-4 hover-card">
+        <div class="card-body">
+          <h5 class="card-title text-center text-success fw-bold">Ср</h5>
+          <ul class="list-unstyled">
+            <li><b>Завтрак:</b> омлет</li>
+            <li><b>Обед:</b> суп из чечевицы</li>
+            <li><b>Ужин:</b> тушёная капуста</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Чт -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 day-card shadow border-0 rounded-4 hover-card">
+        <div class="card-body">
+          <h5 class="card-title text-center text-success fw-bold">Чт</h5>
+          <ul class="list-unstyled">
+            <li><b>Завтрак:</b> кефир, хлебцы</li>
+            <li><b>Обед:</b> овощной бульон</li>
+            <li><b>Ужин:</b> запеканка</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Пт -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 day-card shadow border-0 rounded-4 hover-card">
+        <div class="card-body">
+          <h5 class="card-title text-center text-success fw-bold">Пт</h5>
+          <ul class="list-unstyled">
+            <li><b>Завтрак:</b> йогурт, овсянка</li>
+            <li><b>Обед:</b> рыбный суп</li>
+            <li><b>Ужин:</b> паровые котлеты</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Сб -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 day-card shadow border-0 rounded-4 hover-card">
+        <div class="card-body">
+          <h5 class="card-title text-center text-success fw-bold">Сб</h5>
+          <ul class="list-unstyled">
+            <li><b>Завтрак:</b> творог, хлеб</li>
+            <li><b>Обед:</b> овощной суп</li>
+            <li><b>Ужин:</b> тушёные овощи</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Вс -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card h-100 day-card shadow border-0 rounded-4 hover-card">
+        <div class="card-body">
+          <h5 class="card-title text-center text-success fw-bold">Вс</h5>
+          <ul class="list-unstyled">
+            <li><b>Завтрак:</b> овсянка с орехами</li>
+            <li><b>Обед:</b> куриный суп</li>
+            <li><b>Ужин:</b> грибы, капуста</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- CSS qo'shimcha style -->
+<style>
+  body {
+    background: linear-gradient(to right, #f8fff8, #f0fdf4);
+  }
+  .day-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .day-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  }
+  .card-title {
+    font-size: 1.3rem;
+  }
+</style>
+{% endblock %}

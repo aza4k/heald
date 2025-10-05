@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow p-4">
+      <h3 class="text-center mb-4">Заполните профиль</h3>
+      <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label">ФИО</label>
+          <input type="text" name="fio" value="{{ userprofile.fio|default:'' }}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Дата рождения</label>
+          <input type="date" name="birthdate" value="{{ userprofile.birthdate|date:'Y-m-d' }}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Телефон</label>
+          <input type="text" name="phone" value="{{ userprofile.phone|default:'' }}" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Адрес проживания</label>
+          <input type="text" name="address" value="{{ userprofile.address|default:'' }}" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Сохранить</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

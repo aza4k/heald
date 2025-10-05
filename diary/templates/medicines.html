@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container py-4">
+  <header class="bg-success text-white p-3 rounded mb-3 shadow">
+    <h1 class="h3 fw-bold text-center">Лекарства</h1>
+  </header>
+
+  <main class="bg-white p-4 rounded shadow">
+    <h5 class="mb-3">Список лекарств</h5>
+    <table class="table table-bordered align-middle">
+      <thead class="table-success text-center">
+        <tr>
+          <th>Название</th>
+          <th>Дозировка</th>
+          <th>Время приёма</th>
+          <th>Действие</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for med in medicines %}
+        <tr>
+          <td>{{ med.name }}</td>
+          <td>{{ med.dose }}</td>
+          <td>
+            {% for t in med.times.all %}
+              {{ t.time|time:"H:i" }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+              <span class="text-muted">Время не указано</span>
+            {% endfor %}
+          </td>
+          <td class="text-center">
+            <a href="{% url 'delete_medicine' med.id %}" class="btn btn-danger btn-sm">Удалить</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="4" class="text-center text-muted py-3">Нет лекарств</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <hr>
+
+    <h5>Добавить лекарство</h5>
+    <form method="POST">
+      {% csrf_token %}
+      <div class="row g-3">
+        <div class="col-md-4">
+          <input type="text" name="name" placeholder="Название" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+          <input type="text" name="dose" placeholder="Дозировка" class="form-control" required>
+        </div>
+      </div>
+
+      <div id="timeInputs" class="mt-3">
+        <div class="input-group mb-2">
+          <input type="time" name="times[]" class="form-control" required>
+          <button type="button" class="btn btn-danger remove-time">X</button>
+        </div>
+      </div>
+
+      <button type="button" id="addTime" class="btn btn-secondary btn-sm mb-3">+ Добавить время</button>
+
+      <div>
+        <button type="submit" class="btn btn-success px-4">Добавить</button>
+      </div>
+    </form>
+  </main>
+</div>
+
+<script>
+document.getElementById('addTime').addEventListener('click', () => {
+  const timeInputs = document.getElementById('timeInputs');
+  const div = document.createElement('div');
+  div.classList.add('input-group', 'mb-2');
+  div.innerHTML = `
+    <input type="time" name="times[]" class="form-control" required>
+    <button type="button" class="btn btn-danger remove-time">X</button>
+  `;
+  timeInputs.appendChild(div);
+});
+
+document.addEventListener('click', function(e) {
+  if (e.target.classList.contains('remove-time')) {
+    e.target.parentElement.remove();
+  }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Лекарства</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-r from-green-50 to-green-100 min-h-screen flex flex-col items-center p-6">
+
+  <header class="w-full max-w-4xl bg-green-700 text-white p-4 rounded-lg shadow mb-6">
+    <h1 class="text-2xl font-bold">Лекарства</h1>
+  </header>
+
+  <main class="w-full max-w-4xl bg-white p-6 rounded-lg shadow-lg">
+    <!-- Таблица лекарств -->
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold mb-4">Список лекарств</h2>
+      <table id="medsTable" class="w-full border-collapse border border-gray-300">
+        <thead>
+          <tr class="bg-green-200">
+            <th class="border border-gray-300 p-2">Название</th>
+            <th class="border border-gray-300 p-2">Дозировка</th>
+            <th class="border border-gray-300 p-2">Расписание</th>
+            <th class="border border-gray-300 p-2">Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Лекарства будут добавляться сюда -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Форма добавления -->
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold mb-4">Добавить лекарство</h2>
+      <form id="medForm" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <input type="text" id="medName" placeholder="Название" class="border p-2 rounded" required>
+        <input type="text" id="medDose" placeholder="Дозировка" class="border p-2 rounded" required>
+        <input type="text" id="medSchedule" placeholder="Расписание" class="border p-2 rounded" required>
+        <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 col-span-1 md:col-span-3">
+          Добавить
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const medsTableBody = document.querySelector("#medsTable tbody");
+    const medForm = document.getElementById("medForm");
+
+    // Загружаем данные из localStorage
+    let meds = JSON.parse(localStorage.getItem("meds")) || [];
+
+    function renderMeds() {
+      medsTableBody.innerHTML = "";
+      meds.forEach((med, index) => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="border border-gray-300 p-2">${med.name}</td>
+          <td class="border border-gray-300 p-2">${med.dose}</td>
+          <td class="border border-gray-300 p-2">${med.schedule}</td>
+          <td class="border border-gray-300 p-2 text-center">
+            <button class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" onclick="deleteMed(${index})">Удалить</button>
+          </td>
+        `;
+        medsTableBody.appendChild(row);
+      });
+    }
+
+    function deleteMed(index) {
+      meds.splice(index, 1);
+      localStorage.setItem("meds", JSON.stringify(meds));
+      renderMeds();
+    }
+
+    medForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const medName = document.getElementById("medName").value;
+      const medDose = document.getElementById("medDose").value;
+      const medSchedule = document.getElementById("medSchedule").value;
+
+      meds.push({ name: medName, dose: medDose, schedule: medSchedule });
+      localStorage.setItem("meds", JSON.stringify(meds));
+
+      medForm.reset();
+      renderMeds();
+    });
+
+    // Рисуем лекарства при загрузке
+    renderMeds();
+  </script>
+</body>
+</html>

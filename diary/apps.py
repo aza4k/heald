@@ -1,6 +1,9 @@
 from django.apps import AppConfig
 
-
 class DiaryConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'diary'
+
+    def ready(self):
+        from diary.tasks import start_scheduler
+        start_scheduler()

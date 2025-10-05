@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block title %}Chat-bot{% endblock %}
+{% block content %}
+<div class="container my-1">
+  <div class="card shadow border-0 rounded-4">
+    <!-- Header -->
+    <div class="card-header bg-success text-white d-flex align-items-center">
+      <span class="fs-4 me-2">🤖</span>
+      <h4 class="mb-0">DiANA Chat-bot</h4>
+    </div>
+
+    <!-- Chat Box -->
+    <div class="card-body p-3" style="height: 400px; overflow-y: auto; background: #f9fdf9;" id="chat-box">
+      <div class="text-muted text-center mt-5">
+        <small>💬 Начните диалог с ботом</small>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="card-footer bg-light">
+      <form id="chat-form" class="d-flex">
+        {% csrf_token %}
+        <input id="user-input" type="text" class="form-control me-2 rounded-pill" placeholder="Напишите сообщение..." required>
+        <button class="btn btn-success rounded-pill px-4" type="submit">➤</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Umumiy chat uslubi */
+  #chat-box {
+    font-size: 0.95rem;
+    line-height: 1.4;
+  }
+  /* User xabari (o‘ngda yashil) */
+  .chat-user {
+    background: #198754;
+    color: #fff;
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 18px 18px 0 18px;
+    max-width: 70%;
+    word-wrap: break-word;
+  }
+  /* Bot xabari (chapda oq) */
+  .chat-bot {
+    background: #fff;
+    color: #333;
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 18px 18px 18px 0;
+    border: 1px solid #dee2e6;
+    max-width: 70%;
+    word-wrap: break-word;
+  }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const form = document.getElementById("chat-form");
+  const input = document.getElementById("user-input");
+  const chatBox = document.getElementById("chat-box");
+
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const message = input.value.trim();
+    if (!message) return;
+
+    // Foydalanuvchi xabari
+    chatBox.innerHTML += `
+      <div class="d-flex justify-content-end mb-2">
+        <div class="chat-user">${message}</div>
+      </div>`;
+    input.value = "";
+
+    // CSRF token
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    try {
+      const response = await fetch("/api/chat/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({ message })
+      });
+
+      const data = await response.json();
+
+      if (data.reply) {
+        chatBox.innerHTML += `
+          <div class="d-flex justify-content-start mb-2">
+            <div class="chat-bot">${data.reply}</div>
+          </div>`;
+      } else if (data.error) {
+        chatBox.innerHTML += `
+          <div class="d-flex justify-content-start text-danger mb-2">
+            <small>${data.error}</small>
+          </div>`;
+      }
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+    } catch (error) {
+      chatBox.innerHTML += `
+        <div class="d-flex justify-content-start text-danger mb-2">
+          <small>⚠️ Xatolik yuz berdi!</small>
+        </div>`;
+      console.error(error);
+    }
+  });
+});
+</script>
+{% endblock %}

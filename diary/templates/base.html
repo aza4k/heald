@@ -1,30 +1,159 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="ru">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Healdi</title>
+  <meta charset="UTF-8">
+  <title>HealD | {% block title %}{% endblock %}</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f0fdf4;
+      color: #263238;
+    }
+
+    .navbar {
+      background-color: #b2efb7 !important;
+    }
+
+    .navbar-brand span {
+      color: #2e7d32;
+    }
+
+    .btn-light {
+      background-color: #ffffff;
+      color: #2e7d32;
+    }
+
+    .btn-outline-light {
+      border-color: #2e7d32;
+      color: #2e7d32;
+    }
+
+    .btn-outline-light:hover {
+      background-color: #ffffff;
+      color: #2e7d32;
+    }
+
+    .menu-card {
+      background-color: #b2efb7;
+      color: #2e7d32;
+      border: none;
+      transition: 0.3s;
+    }
+
+    .menu-card:hover {
+      background-color: #c8e6c9;
+      transform: translateY(-3px);
+    }
+
+    .card-title {
+      color: #2e7d32;
+      font-weight: 600;
+    }
+  </style>
 </head>
+
 <body>
-<nav>
-    {% if user.is_authenticated %}
-        Salom, {{ user.username }} |
-        <a href="{% url 'dashboard' %}">Bosh sahifa</a> |
-        <a href="{% url 'add_entry' %}">+ Qo‘shish</a> |
 
-        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg shadow">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="{% url 'index' %}">
+        <img src="{% static 'img/logo_l.png' %}" alt="HealD Logo" height="60" class="me-3">
+      </a>
+      <div class="d-flex">
+        {% if user.is_authenticated %}
+        <div class="flex items-center gap-4">
+          <style>
+  .notification-icon {
+    position: relative;
+    display: inline-block;
+  }
+
+  .notification-badge {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    font-size: 6px;
+    padding: 2px 6px;
+    font-weight: bold;
+  }
+</style>
+
+<a href="{% url 'notifications' %}" class="notification-icon">
+  <img src="{% static 'img/bell.png' %}" alt="HealD Logo" height="40" class="me-1">
+  {% if unread_notifications_count > 0 %}
+    <span class="notification-badge">{{ unread_notifications_count }}</span>
+  {% else %}
+      <span class="notification-badge">.</span>
+
+  {% endif %}
+</a>
+
+          <form action="{% url 'logout' %}" method="post" style="display:inline;">
             {% csrf_token %}
-            <button type="submit">Chiqish</button>
-        </form>
-    {% else %}
-        <a href="{% url 'login' %}">Kirish</a> |
-        <a href="{% url 'register' %}">Ro‘yxatdan o‘tish</a>
-    {% endif %}
-</nav>
-<hr>
+            <button type="submit" class="btn btn-outline-light fw-bold">Выйти</button>
+          </form>
+        </div>
 
-<hr>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-light me-2">Войти</a>
+        <a href="{% url 'register' %}" class="btn btn-outline-light fw-bold">Регистрация</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
 
-    <hr>
+  <main class="container py-5">
     {% block content %}{% endblock %}
+  </main>
+<!-- Footer -->
+<footer class="bg-success text-white mt-5">
+  <div class="container py-4">
+    <div class="row">
+      <!-- Logo va qisqa info -->
+      <div class="col-md-4 mb-3">
+        <h5 class="fw-bold">HealD</h5>
+        <p class="small">
+          HealD — ваш персональный помощник для контроля здоровья и диабета.  
+          Поддержка, советы и напоминания в одном месте.
+        </p>
+      </div>
+
+      <!-- Navigatsiya -->
+      <div class="col-md-4 mb-3">
+        <h5 class="fw-bold">Навигация</h5>
+        <ul class="list-unstyled">
+          <li><a href="{% url 'index' %}" class="text-white text-decoration-none">🏠 Главная</a></li>
+          <li><a href="{% url 'diet' %}" class="text-white text-decoration-none">🥗 Диета</a></li>
+          <li><a href="{% url 'chatbot_page' %}" class="text-white text-decoration-none">🤖 Чат-бот</a></li>
+          <li><a href="{% url 'notifications' %}" class="text-white text-decoration-none">🔔 Напоминания</a></li>
+        </ul>
+      </div>
+
+      <!-- Kontaktlar -->
+      <div class="col-md-4 mb-3">
+        <h5 class="fw-bold">Контакты</h5>
+        <p class="small mb-1">📧 support@heald.uz</p>
+        <p class="small mb-1">📞 +998 90 123 45 67</p>
+        <p class="small">🌐 www.heald.uz</p>
+      </div>
+    </div>
+
+    <!-- Pastki chiziq -->
+    <div class="text-center border-top border-light pt-3 mt-3">
+      <p class="small mb-0">© 2025 HealD. Все права защищены.</p>
+    </div>
+  </div>
+</footer>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
