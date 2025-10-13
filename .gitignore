@@ -14,9 +14,6 @@ env/
 *.swp
 *.swo
 
-# Database files
-*.sqlite3
-
 # Media and static files (if not managed by a CDN or separate storage)
 media/
 static_collected/

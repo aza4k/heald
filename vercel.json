@@ -5,10 +5,7 @@
       "use": "@vercel/python"
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "backend/wsgi.py"
-    }
-  ]
+  "env": {
+    "DATABASE_URL": "postgresql://postgres:mysecret@db.abcxyz.supabase.co:6543/postgres"
+  }
 }
