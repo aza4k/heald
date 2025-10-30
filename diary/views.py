@@ -62,7 +62,7 @@ def chat_api(request):
                 {"role": "user", "content": user_message},
             ],
             max_completion_tokens=1000,
-            temperature=0.7,
+            temperature=1,
         )
 
         reply = resp.choices[0].message.content.strip()
