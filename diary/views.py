@@ -9,7 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import os
 import json
-from openai import OpenAI  # ✅ yangi SDK (nanoda)
+import openai
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -33,7 +33,7 @@ from .forms import (
 
 # -------------------------------------------------------------------
 # 🔑 OpenAI sozlamalari (GPT-5)
-client = OpenAI(api_key="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")
+openai.api_key = "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"
 
 # -------------------------------------------------------------------
 # 🧠 Chat sahifasi
@@ -45,6 +45,9 @@ def chat_page(request):
 def chat_api(request):
     if request.method != "POST":
         return JsonResponse({"error": "Faqat POST so‘rovlariga ruxsat berilgan."}, status=405)
+    
+    if not openai.api_key:
+        return JsonResponse({"error": "API-ключ topilmadi."}, status=500)
 
     try:
         data = json.loads(request.body.decode("utf-8"))
@@ -53,8 +56,8 @@ def chat_api(request):
             return JsonResponse({"error": "Bo‘sh xabar."}, status=400)
 
         # ✅ GPT-5 javobi (nanoda)
-        response = client.chat.completions.create(
-            model="gpt-5",  # yoki 'gpt-4o-mini' agar GPT-5 hali APIda yo‘q bo‘lsa
+        resp = openai.ChatCompletion.create(
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",
@@ -65,15 +68,17 @@ def chat_api(request):
                 },
                 {"role": "user", "content": user_message},
             ],
-            max_tokens=800,
+            max_tokens=1000,
             temperature=0.7,
         )
 
-        reply = response.choices[0].message.content.strip()
+        reply = resp["choices"][0]["message"]["content"].strip()
         return JsonResponse({"reply": reply})
-
+    except openai.error.OpenAIError as oe:
+        return JsonResponse({"error": f"OpenAI xatosi: {str(oe)}"}, status=500)
     except Exception as e:
-        return JsonResponse({"error": f"OpenAI yoki server xatosi: {str(e)}"}, status=500)
+        return JsonResponse({"error": f"Server xatosi: {str(e)}"}, status=500)
+
 
 # -------------------------------------------------------------------
 # ✅ PDF eksport funksiyasi (standart Helvetica shrift bilan)
