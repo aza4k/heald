@@ -10,7 +10,9 @@ from django.views.decorators.csrf import csrf_exempt
 import os
 import json
 from django.conf import settings # Buni qo'shing
-import openai
+#import openai
+from openai import OpenAI
+client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
@@ -39,15 +41,13 @@ openai.api_key = settings.OPENAI_API_KEY
 # 🧠 Chat sahifasi
 def chat_page(request):
     return render(request, "chatbot.html")
-
-
 @csrf_exempt
 def chat_api(request):
     if request.method != "POST":
         return JsonResponse({"error": "Faqat POST so‘rovlariga ruxsat berilgan."}, status=405)
     
     if not settings.OPENAI_API_KEY:
-        return JsonResponse({"error": "API-ключ topilmadi."}, status=500)
+        return JsonResponse({"error": "API kaliti topilmadi."}, status=500)
 
     try:
         data = json.loads(request.body.decode("utf-8"))
@@ -55,29 +55,60 @@ def chat_api(request):
         if not user_message:
             return JsonResponse({"error": "Bo‘sh xabar."}, status=400)
 
-        # ✅ GPT-5 javobi (nanoda)
-        resp = openai.ChatCompletion.create(
+        # ✅ Yangi OpenAI chaqirig‘i
+        resp = client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "Siz diabet bilan og‘rigan foydalanuvchilarga yordam beruvchi tibbiy yordamchisiz. "
-                        "Javoblaringiz qisqa, aniq va foydali bo‘lsin."
-                    )
-                },
+                {"role": "system", "content": "Siz diabet bilan og‘rigan foydalanuvchilarga yordam beruvchi tibbiy yordamchisiz. Javoblaringiz qisqa, aniq va foydali bo‘lsin."},
                 {"role": "user", "content": user_message},
             ],
             max_tokens=1000,
             temperature=0.7,
         )
 
-        reply = resp["choices"][0]["message"]["content"].strip()
+        reply = resp.choices[0].message.content.strip()
         return JsonResponse({"reply": reply})
-    except openai.error.OpenAIError as oe:
-        return JsonResponse({"error": f"OpenAI xatosi: {str(oe)}"}, status=500)
+
     except Exception as e:
         return JsonResponse({"error": f"Server xatosi: {str(e)}"}, status=500)
+
+# @csrf_exempt
+# def chat_api(request):
+#     if request.method != "POST":
+#         return JsonResponse({"error": "Faqat POST so‘rovlariga ruxsat berilgan."}, status=405)
+    
+#     if not settings.OPENAI_API_KEY:
+#         return JsonResponse({"error": "API-ключ topilmadi."}, status=500)
+
+#     try:
+#         data = json.loads(request.body.decode("utf-8"))
+#         user_message = data.get("message", "").strip()
+#         if not user_message:
+#             return JsonResponse({"error": "Bo‘sh xabar."}, status=400)
+
+#         # ✅ GPT-5 javobi (nanoda)
+#         resp = openai.ChatCompletion.create(
+#             model="gpt-4o-mini",
+#             messages=[
+#                 {
+#                     "role": "system",
+#                     "content": (
+#                         "Siz diabet bilan og‘rigan foydalanuvchilarga yordam beruvchi tibbiy yordamchisiz. "
+#                         "Javoblaringiz qisqa, aniq va foydali bo‘lsin."
+#                     )
+#                 },
+#                 {"role": "user", "content": user_message},
+#             ],
+#             max_tokens=1000,
+#             temperature=0.7,
+#         )
+
+#         reply = resp["choices"][0]["message"]["content"].strip()
+#         return JsonResponse({"reply": reply})
+#     except openai.error.OpenAIError as oe:
+#         return JsonResponse({"error": f"OpenAI xatosi: {str(oe)}"}, status=500)
+#     except Exception as e:
+#         return JsonResponse({"error": f"Server xatosi: {str(e)}"}, status=500)
 
 
 # -------------------------------------------------------------------
