@@ -46,8 +46,8 @@ def chat_api(request):
     if request.method != "POST":
         return JsonResponse({"error": "Faqat POST so‘rovlariga ruxsat berilgan."}, status=405)
     
-    if not settings.OPENAI_API_KEY: # 'openai.api_key' o'rniga 'settings.OPENAI_API_KEY'
-        return JsonResponse({"error": "API-ключ topilmadi."}, status=500)
+    if not settings.OPENAI_API_KEY:
+        return JsonResponse({"error": "API-ключ topilmadi."}, status=500)
 
     try:
         data = json.loads(request.body.decode("utf-8"))
