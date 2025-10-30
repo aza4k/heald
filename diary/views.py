@@ -36,7 +36,6 @@ from .forms import (
 
 # -------------------------------------------------------------------
 # 🔑 OpenAI sozlamalari (GPT-5)
-openai.api_key = settings.OPENAI_API_KEY
 # -------------------------------------------------------------------
 # 🧠 Chat sahifasi
 def chat_page(request):
