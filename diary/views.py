@@ -61,7 +61,7 @@ def chat_api(request):
                 {"role": "system", "content": "Siz diabet bilan og‘rigan foydalanuvchilarga yordam beruvchi tibbiy yordamchisiz. Javoblaringiz qisqa, aniq va foydali bo‘lsin. Hamma tilda gaplasha olasan"},
                 {"role": "user", "content": user_message},
             ],
-            max_tokens=1000,
+            max_completion_tokens=1000,
             temperature=0.7,
         )
 
