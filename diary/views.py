@@ -56,7 +56,7 @@ def chat_api(request):
 
         # ✅ Yangi OpenAI chaqirig‘i
         resp = client.chat.completions.create(
-            model="gpt-5-nano",
+            model="gpt-5-mini",
             messages=[
                 {"role": "system", "content": "Siz diabet bilan og‘rigan foydalanuvchilarga yordam beruvchi tibbiy yordamchisiz. Javoblaringiz qisqa, aniq va foydali bo‘lsin. Hamma tilda gaplasha olasan"},
                 {"role": "user", "content": user_message},
