@@ -33,7 +33,7 @@ from .forms import (
 
 # -------------------------------------------------------------------
 # 🔑 OpenAI sozlamalari
-openai.api_key = os.getenv("OPENAI_API_KEY")
+openai.api_key = "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"
 
 # -------------------------------------------------------------------
 # Chat sahifasi
