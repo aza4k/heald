@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 import os
 import json
+from django.conf import settings # Buni qo'shing
 import openai
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
@@ -33,8 +34,7 @@ from .forms import (
 
 # -------------------------------------------------------------------
 # 🔑 OpenAI sozlamalari (GPT-5)
-openai.api_key = "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"
-
+openai.api_key = settings.OPENAI_API_KEY
 # -------------------------------------------------------------------
 # 🧠 Chat sahifasi
 def chat_page(request):
@@ -46,8 +46,8 @@ def chat_api(request):
     if request.method != "POST":
         return JsonResponse({"error": "Faqat POST so‘rovlariga ruxsat berilgan."}, status=405)
     
-    if not openai.api_key:
-        return JsonResponse({"error": "API-ключ topilmadi."}, status=500)
+    if not settings.OPENAI_API_KEY: # 'openai.api_key' o'rniga 'settings.OPENAI_API_KEY'
+        return JsonResponse({"error": "API-ключ topilmadi."}, status=500)
 
     try:
         data = json.loads(request.body.decode("utf-8"))
