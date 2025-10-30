@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
 # keyinchalik kerak bo'lsa:
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+OPENAI_API_KEY = os.getenv("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")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
